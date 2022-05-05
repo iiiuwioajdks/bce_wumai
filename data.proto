@@ -13,8 +13,9 @@ message IP{
 }
 message DataList{
   repeated Data datas = 1;//七天天气数据列表
-  int32 PM25 = 2;//pm2.5指数
-  string situs = 3;//用户地址
+  string situs = 2;//用户地址
+  int32 PM25 = 3;//pm2.5指数
+
 }
 
 service DoFormat{

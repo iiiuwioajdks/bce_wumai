@@ -1,5 +1,5 @@
 文件名GetWeather.py
-get_Weather(IP,)
+get_Weather(IP)
 IN:
   IP:输入参数，用户的IP地址
 Return：

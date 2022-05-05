@@ -49,11 +49,11 @@ def get_Weather(IP):
         data.append(temp)
     situs=[]    
     if city_idname[2] == city_idname[1]:
-        print(city_idname[3], str(city_idname[2]) + '市')
+        # print(city_idname[3], str(city_idname[2]) + '市')
         situs=city_idname[3]+str(city_idname[2]) + '市'
         data.append(situs)
     else:
-        print(city_idname[3], str(city_idname[2]) + '市', str(city_idname[1]) + '区')
+        # print(city_idname[3], str(city_idname[2]) + '市', str(city_idname[1]) + '区')
         situs=city_idname[3]+str(city_idname[2]) + '市'+str(city_idname[1]) + '区'
         data.append(situs)
     data.append(air_now['aqi'])
