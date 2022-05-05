@@ -2,6 +2,8 @@ import time
 import grpc
 from concurrent import futures
 
+import data_pb2
+import data_pb2_grpc
 
 ONE_DAY_IN_SECONDS = 60 * 60 * 24
 IP = "192.168.154.1:8999"
