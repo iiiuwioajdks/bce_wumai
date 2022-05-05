@@ -32,7 +32,7 @@ def get_city(city_kw):
     return city_id, district_name, city_name, province_name, country_name, lat, lon
 
 
-def get_Weather():
+def get_Weather(IP):
     city_input = "长安区"
     city_idname = get_city(city_input)
     city_id = city_idname[0]
