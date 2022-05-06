@@ -1,7 +1,7 @@
 import time
 import grpc
 from concurrent import futures
-
+from GetWeather import get_Weather
 import data_pb2
 import data_pb2_grpc
 
@@ -10,9 +10,10 @@ IP = "192.168.154.1:8999"
 
 class ServiceMain(data_pb2_grpc.DoFormatServicer):
     def get_Weather(self, request,context):
-        global ip
-        ip = request.IP
-        return Data
+        datas = get_Weather(request.situs)
+        pm25 = datas[3]
+        datas = datas[0:3]
+        return data_pb2.DataList(datas,pm25)
 
 def serve():
     grpcServer = grpc.server(futures.ThreadPoolExecutor(max_workers=10))#最多同时服务4个客户端
@@ -27,7 +28,5 @@ def serve():
         grpcServer.stop(0)
 
 if __name__ == "__main__":
-    Data = []
-    ip = "1"
     serve()
 

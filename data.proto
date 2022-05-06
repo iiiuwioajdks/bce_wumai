@@ -8,19 +8,18 @@ message Data{
   int32 wet = 4;//湿度
 
 }
-message IP{
-  string IP = 1;//用户的IP地址
+message SITUS{
+  string situs = 1;//用户的IP地址
 }
 message DataList{
   repeated Data datas = 1;//七天天气数据列表
   int32 PM25 = 2;//pm2.5指数
-  string situs = 3;//用户地址
 }
 
 service DoFormat{
-  rpc get_Weather(IP) returns (DataList){}
+  rpc get_Weather(SITUS) returns (DataList){}
   /*函数名get_Weather,
-    IN：IP
+    IN：SITUS
     OUT：DataList
    */
 }

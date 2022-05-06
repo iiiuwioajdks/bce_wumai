@@ -16,7 +16,7 @@ class DoFormatStub(object):
         """
         self.get_Weather = channel.unary_unary(
                 '/com.learn.demo.DoFormat/get_Weather',
-                request_serializer=data__pb2.IP.SerializeToString,
+                request_serializer=data__pb2.SITUS.SerializeToString,
                 response_deserializer=data__pb2.DataList.FromString,
                 )
 
@@ -35,7 +35,7 @@ def add_DoFormatServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'get_Weather': grpc.unary_unary_rpc_method_handler(
                     servicer.get_Weather,
-                    request_deserializer=data__pb2.IP.FromString,
+                    request_deserializer=data__pb2.SITUS.FromString,
                     response_serializer=data__pb2.DataList.SerializeToString,
             ),
     }
@@ -60,7 +60,7 @@ class DoFormat(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/com.learn.demo.DoFormat/get_Weather',
-            data__pb2.IP.SerializeToString,
+            data__pb2.SITUS.SerializeToString,
             data__pb2.DataList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

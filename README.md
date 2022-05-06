@@ -5,9 +5,12 @@
 需要实现以下函数，已实现
 
 ```python
-def get_Weather(IP):
-    # IP是用户的IP地址
+def get_Weather(situs):
+    # situs:list类型，用户的地址
     # return data=[[min,max,wet]*3,situs,pm2.5]
 ```
 
 myKey.py 里放置了和风天气 api 的密钥
+## 中间键
+proto文件编译指令：
+`python3.6 -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. data.proto`
