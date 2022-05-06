@@ -15,3 +15,7 @@ myKey.py 里放置了和风天气 api 的密钥
 
 proto文件编译指令：
 `python -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. data.proto`
+
+# 后端接口
+
+接口地址：```/api/v1/weather/getweather/<situs>```
