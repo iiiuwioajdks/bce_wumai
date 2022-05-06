@@ -12,5 +12,6 @@ def get_Weather(situs):
 
 myKey.py 里放置了和风天气 api 的密钥
 ## 中间键
+
 proto文件编译指令：
-`python3.6 -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. data.proto`
+`python -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. data.proto`
