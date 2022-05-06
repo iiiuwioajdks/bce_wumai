@@ -16,4 +16,4 @@ Return：
 
 proto文件编译指令：
 
-`python3.6 -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. hello.proto`
+`python3.6 -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. data.proto`
