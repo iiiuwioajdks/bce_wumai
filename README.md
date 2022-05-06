@@ -7,7 +7,7 @@
 ```python
 def get_Weather(situs):
     # situs:list类型，用户的地址
-    # return data=[[min,max,wet]*3,situs,pm2.5]
+    # return data=[[min,max,wet]*3,pm2.5]
 ```
 
 myKey.py 里放置了和风天气 api 的密钥
