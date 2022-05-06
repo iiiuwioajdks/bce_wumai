@@ -1,8 +1,13 @@
-文件名GetWeather.py
-get_Weather(IP,)
-IN:
-  IP:输入参数，用户的IP地址
-Return：
-  data：list嵌套list类型，最里层list包含一天的天气情况
-  每一个list是一天的数据。
-  {{min，max，wet}，{min，max，wet}，{min，max，wet},situs,pm25}
+# 后端开发
+
+## GetWeather.py
+
+需要实现以下函数，已实现
+
+```python
+def get_Weather(IP):
+    # IP是用户的IP地址
+    # return data=[[min,max,wet]*3,situs,pm2.5]
+```
+
+myKey.py 里放置了和风天气 api 的密钥
