@@ -13,7 +13,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:8080/weather/{{date}}/{{city}}"
+				"url": "http://175.24.201.104:8080/weather/{{date}}/{{city}}"
 			},
 			"response": []
 		}
@@ -22,7 +22,7 @@
 
 # 请求示例
 
-GET http://localhost:8080/weather/202205/西安
+GET http://175.24.201.104:8080/weather/202205/西安
 
 # 返回样例
 
