@@ -10,11 +10,10 @@ IP = "192.168.154.1:8999"
 
 class ServiceMain(data_pb2_grpc.DoFormatServicer):
     def get_Weather(self, request,context):
-        datas = get_Weather(request.IP)
-        situs = datas[3]
-        pm25 = datas[4]
+        datas = get_Weather(request.situs)
+        pm25 = datas[3]
         datas = datas[0:3]
-        return data_pb2.DataList(datas,situs,pm25)
+        return data_pb2.DataList(datas,pm25)
 
 def serve():
     grpcServer = grpc.server(futures.ThreadPoolExecutor(max_workers=10))#最多同时服务4个客户端
