@@ -33,7 +33,7 @@ def get_city(city_kw):
 
 
 def get_Weather(situs):
-    city_input = situs[0]
+    city_input = situs
     city_idname = get_city(city_input)
     city_id = city_idname[0]
     # get_now = get('now',city_id)
@@ -47,15 +47,16 @@ def get_Weather(situs):
         temp.append(get_daily['daily'][i]['tempMax'])
         temp.append(get_daily['daily'][i]['humidity'])
         data.append(temp)
-    # situs=[]    
-    # if city_idname[2] == city_idname[1]:
-    #     print(city_idname[3], str(city_idname[2]) + '市')
-    #     situs=city_idname[3]+str(city_idname[2]) + '市'
-    #     data.append(situs)
-    # else:
-    #     print(city_idname[3], str(city_idname[2]) + '市', str(city_idname[1]) + '区')
-    #     situs=city_idname[3]+str(city_idname[2]) + '市'+str(city_idname[1]) + '区'
-    #     data.append(situs)
+    situs=[]    
+    if city_idname[2] == city_idname[1]:
+        print(city_idname[3], str(city_idname[2]) + '市')
+        situs=city_idname[3]+str(city_idname[2]) + '市'
+        data.append(situs)
+    else:
+        print(city_idname[3], str(city_idname[2]) + '市', str(city_idname[1]) + '区')
+        situs=city_idname[3]+str(city_idname[2]) + '市'+str(city_idname[1]) + '区'
+        data.append(situs)
     data.append(air_now['aqi'])
 
     return data
+get_Weather("西安市")

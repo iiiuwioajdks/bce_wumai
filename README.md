@@ -6,7 +6,7 @@
 
 ```python
 def get_Weather(situs):
-    # situs:list类型，用户的地址
+    # situs:String类型，用户的最低级地址
     # return data=[[min,max,wet]*3,pm2.5]
 ```
 
