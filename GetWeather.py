@@ -11,21 +11,19 @@ def get(city_input):
     return requests.get(url).json()
 
 def get_humidy(city_input):
-    url = url_api_humidy + '?city=' +city_input
+    url = url_api_humidy + '?city=' + city_input
     return requests.get(url).json()
 
 def get_Weather(situs):
     city_input = situs
     get_daily = get(city_input)
     get_hum = get_humidy(city_input)
+    print(situs)
     get_daily['hourly_hum']=[]
     for i in range(7):
-        weather = get_hum['daily_forecast'][i]['cond']['txt_d']
-        get_daily['weather'][i]['weather']=weather
+        get_daily['weather'][i]['weather']=get_hum['daily_forecast'][i]['cond']['txt_d']
     for i in range(8):
-        hum = get_hum['hourly_forecast'][i]['hum']
-        date = get_hum['hourly_forecast'][i]['date']
         get_daily['hourly_hum'].append({})
-        get_daily['hourly_hum'][i]['hum']=hum
-        get_daily['hourly_hum'][i]['date']=date
+        get_daily['hourly_hum'][i]['hum']=get_hum['hourly_forecast'][i]['hum']
+        get_daily['hourly_hum'][i]['date']=get_hum['hourly_forecast'][i]['date']
     return get_daily

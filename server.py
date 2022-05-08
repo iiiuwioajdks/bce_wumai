@@ -9,7 +9,7 @@ app.config.from_pyfile('config.ini')
 
 @app.route('/api/v1/weather/getweather/<situs>')
 def getWeather(situs):
-
+    print(situs)
     data=GetWeather.get_Weather(situs)
     data=jsonify(data)
     return data
