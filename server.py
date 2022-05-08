@@ -1,15 +1,18 @@
-from flask import Flask
+from flask import Flask,jsonify
 from flask_cors import CORS
+from matplotlib.font_manager import json_dump
 import GetWeather
 import json
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
- 
+app.config.from_pyfile('config.ini')
+
 @app.route('/api/v1/weather/getweather/<situs>')
 def getWeather(situs):
 
     data=GetWeather.get_Weather(situs)
-    return json.dumps(data)
+    data=jsonify(data)
+    return data
  
 if __name__ == '__main__':
     app.debug = True
