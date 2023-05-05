@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "country": "香港",
+  "countryCode": "HK",
+  "region": "NST",
+  "regionName": "沙田區",
+  "city": "Shatin",
+  "zip": "",
+  "lat": 22.3829,
+  "lon": 114.1779,
+  "timezone": "Asia/Hong_Kong",
+  "isp": "HGC Global Communications Limited",
+  "org": "HGC Global Communications Limited",
+  "as": "AS9304 HGC Global Communications Limited",
+  "query": "118.140.166.145"
+}

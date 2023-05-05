@@ -1,0 +1,64 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>雾霾探测</title>
+  </head>
+  <body>
+    <h1>雾霾探测</h1>
+    <button onclick="getWeather()">获取天气信息</button>
+    <div id="result"></div>
+
+    <script>
+      function getWeather() {
+        fetch('http://localhost:8999/api/v1/weather/getweather')  // 发送 GET 请求
+          .then(response => response.json())  // 将响应转换为 JSON 格式
+          .then(data => {
+            // 在这里处理从服务器端获取到的数据
+            console.log(data);
+            // 在页面上显示数据
+            document.getElementById('result').textContent = JSON.stringify(data);
+          })
+          .catch(error => {
+            // 在这里处理请求失败的情况
+            console.error(error);
+          });
+      }
+    </script>
+  </body> -->
+</html>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>调用后端接口示例</title>
+  </head>
+  <body>
+    <h1>调用后端接口示例</h1>
+    <button onclick="getWeather()">获取天气信息</button>
+    <pre id="result"></pre>
+
+    <script>
+      function getWeather() {
+        fetch('http://localhost:8999/api/v1/weather/getweather')  // 发送 GET 请求
+          .then(response => response.json())  // 将响应转换为 JSON 格式
+          .then(data => {
+            // 在这里处理从服务器端获取到的数据
+            console.log(data);
+            console.log(data.air_quality_fxLink)
+            // // 在页面上显示数据
+            // document.getElementById('result').textContent = JSON.stringify(data, null, 4);
+            // 传递数据到下一个页面
+            sessionStorage.setItem('weatherData', JSON.stringify(data));
+            // 跳转到展示页面
+            window.location.href = 'weather.html';
+          })
+          .catch(error => {
+            // 在这里处理请求失败的情况
+            console.error(error);
+          });
+      }
+    </script>
+  </body>
+</html>
