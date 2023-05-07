@@ -99,3 +99,9 @@ a {
 }
 
 .card-footer span:hover:not(.active) {background-color: #ddd;}
+
+#href {
+  margin: 10px;
+  color: rgba(33, 148, 241);
+  text-align: center;
+}

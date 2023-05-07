@@ -41,7 +41,7 @@
       </div>
       <div class="flex-center _bottom">
         <p>湿度: <span text="{{humidity}}"></span></p>
-        <p>空气质量: <span text="{{air_quality.category}}"></span></p>
+        <p if="i<=4">空气质量: <span text="{{air_quality.category}}"></span></p>
         <p if="i==0">能见度: <span text="{{weather_now.vis}}"></span></p>
         <p if="i==0">风向: <span text="{{weather_now.windDir}}"></span></p>
         <p>日期: <span text="{{fxDate}}"></span></p>
@@ -63,6 +63,7 @@
     </div>
     <!-- 底部导航栏 -->
     <div class="card-footer" id="card-footer"></div>
+    <a href="./weather.html" id="href">查看天气详情</a>
   </div>
 
   <script>
@@ -121,8 +122,12 @@
               return;
             }
             prop = node.getAttribute('if');
-            if(prop && node.nodeName === 'P') { // i===0
-              if(page !== 0) {
+            if(prop && node.nodeName === 'P') { // i==0
+              if(page !== 0 && prop === 'i==0') {
+                node.className = 'none';
+                return;
+              }
+              if(page >= 4 && prop === 'i<=4') {
                 node.className = 'none';
                 return;
               }
