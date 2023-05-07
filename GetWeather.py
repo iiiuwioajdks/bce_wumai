@@ -26,7 +26,9 @@ def get_city_by_ip():
     url_lookup = url_api_lookup + '?location=' + loc + mykey
     response = requests.get(url_lookup).json()
     id = response['location'][0]['id']
-    return id
+    name = response['location'][0]['name']
+    adm1 = response['location'][0]['adm1']
+    return id, adm1+name
 
 def get_weather(id):
     url = url_api_weather + '?location=' + id + mykey + ngzip
@@ -45,7 +47,7 @@ def get(id):
     return requests.get(url).json()
 
 def get_Weather():
-    id = get_city_by_ip()
+    id, name = get_city_by_ip()
     # city_input = situs
     # url_lookup = url_api_lookup + '?location=' + city_input + mykey
     # response = requests.get(url_lookup).json()
@@ -61,6 +63,7 @@ def get_Weather():
             break
     
     try:
+        get_daily["city_name"] = name
         get_daily["air_quality_fxLink"] = get_hum["fxLink"]
         get_daily["daily"][0]["air_quality_now"] = air_now["now"]
         get_daily["daily"][0]["air_quality_now"]["fxLink"] = air_now["fxLink"]
