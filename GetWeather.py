@@ -12,7 +12,7 @@ url_api_weather = 'https://devapi.qweather.com/v7/weather/now'
 url_api_lookup = 'https://geoapi.qweather.com/v2/city/lookup'
 url_api_humidy = 'https://devapi.qweather.com/v7/air/5d'
 url_api_humidy_now = 'https://devapi.qweather.com/v7/air/now'
-url_all_in_one = 'https://devapi.qweather.com/v7/weather/3d'
+url_all_in_one = 'https://devapi.qweather.com/v7/weather/7d'
 
 def get_city_by_ip():
     # site = requests.get("http://checkip.dyndns.org/")

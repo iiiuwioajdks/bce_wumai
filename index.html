@@ -232,8 +232,9 @@
       btn.onclick = async function() {
         startLoading();
         _active = true;
+        let data;
         try {
-          let data = await getWeather();
+          data = await getWeather();
           data = await data.json();
         } catch(e) { // 错误处理
           stopLoading();
