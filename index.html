@@ -41,7 +41,7 @@
       </div>
       <div class="flex-center _bottom">
         <p>湿度: <span text="{{humidity}}"></span></p>
-        <p if="i<=4">空气质量: <span text="{{air_quality.category}}"></span></p>
+        <p if="i<=5">空气质量: <span text="{{air_quality.category}}"></span></p>
         <p if="i==0">能见度: <span text="{{weather_now.vis}}"></span></p>
         <p if="i==0">风向: <span text="{{weather_now.windDir}}"></span></p>
         <p>日期: <span text="{{fxDate}}"></span></p>
@@ -127,7 +127,7 @@
                 node.className = 'none';
                 return;
               }
-              if(page >= 4 && prop === 'i<=4') {
+              if(page >= 4 && prop === 'i<=5') {
                 node.className = 'none';
                 return;
               }

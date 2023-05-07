@@ -5,6 +5,7 @@ import re
 import socket
 import json
 from myKey import KEY
+from myKey import BD_KEY
 mykey = '&key=' + KEY # EDIT HERE!
 ngzip = '&gzip=n'
 
@@ -14,21 +15,47 @@ url_api_humidy = 'https://devapi.qweather.com/v7/air/5d'
 url_api_humidy_now = 'https://devapi.qweather.com/v7/air/now'
 url_all_in_one = 'https://devapi.qweather.com/v7/weather/7d'
 
+url = "https://api.map.baidu.com/location/ip"
+
 def get_city_by_ip():
     # site = requests.get("http://checkip.dyndns.org/")
     # grab = re.findall('([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', site.text)
-    ip = "106.38.226.62"
-    gi = pygeoip.GeoIP("ip_tools/GeoLiteCity.dat")
-    rec = gi.record_by_addr(ip)
-    long = round(rec['longitude'],2)
-    lat = round(rec['latitude'],2)
-    loc = str(long)+","+str(lat)
+    global ip
+    try :
+        ip = requests.get('http://ifconfig.me/ip', timeout=1).text.strip()
+    except:
+        ip = "220.243.191.9"
+    params = {
+        "ip":    ip,
+        "coor":    "bd09ll",
+        "ak":       BD_KEY,
+    }
+    response = requests.get(url=url, params=params)
+    if not response:
+        return 0, ""
+    rsp = response.json()
+    name = rsp["content"]["address_detail"]["province"]+rsp["content"]["address_detail"]["city"]
+    
+    x = round(float(rsp["content"]["point"]["x"]),2)
+    y = round(float(rsp["content"]["point"]["y"]),2)
+    print(x, y)
+    loc = str(x)+','+str(y)
     url_lookup = url_api_lookup + '?location=' + loc + mykey
     response = requests.get(url_lookup).json()
     id = response['location'][0]['id']
-    name = response['location'][0]['name']
-    adm1 = response['location'][0]['adm1']
-    return id, adm1+name
+    return id, name
+    # ip = "220.243.191.9"
+    # gi = pygeoip.GeoIP("ip_tools/GeoLiteCity.dat")
+    # rec = gi.record_by_addr(ip)
+    # long = round(rec['longitude'],2)
+    # lat = round(rec['latitude'],2)
+    # loc = str(long)+","+str(lat)
+    # url_lookup = url_api_lookup + '?location=' + loc + mykey
+    # response = requests.get(url_lookup).json()
+    # id = response['location'][0]['id']
+    # name = response['location'][0]['name']
+    # adm1 = response['location'][0]['adm1']
+    # return id, adm1+name
 
 def get_weather(id):
     url = url_api_weather + '?location=' + id + mykey + ngzip
@@ -61,7 +88,6 @@ def get_Weather():
             get_daily["daily"][i]['air_quality'] = get_hum["daily"][i]
         except :
             break
-    
     try:
         get_daily["city_name"] = name
         get_daily["air_quality_fxLink"] = get_hum["fxLink"]
