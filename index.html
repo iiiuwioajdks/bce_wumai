@@ -1,64 +1,338 @@
-<!-- <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>雾霾探测</title>
-  </head>
-  <body>
-    <h1>雾霾探测</h1>
-    <button onclick="getWeather()">获取天气信息</button>
-    <div id="result"></div>
-
-    <script>
-      function getWeather() {
-        fetch('http://localhost:8999/api/v1/weather/getweather')  // 发送 GET 请求
-          .then(response => response.json())  // 将响应转换为 JSON 格式
-          .then(data => {
-            // 在这里处理从服务器端获取到的数据
-            console.log(data);
-            // 在页面上显示数据
-            document.getElementById('result').textContent = JSON.stringify(data);
-          })
-          .catch(error => {
-            // 在这里处理请求失败的情况
-            console.error(error);
-          });
-      }
-    </script>
-  </body> -->
-</html>
-
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>调用后端接口示例</title>
-  </head>
-  <body>
-    <h1>调用后端接口示例</h1>
-    <button onclick="getWeather()">获取天气信息</button>
-    <pre id="result"></pre>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>天气查询</title>
+  <link rel="stylesheet" href="./styles/index.css">
+  <link rel="stylesheet" href="./styles/loading.css">
+  <link rel="stylesheet" href="./styles/card.css">
+  <link rel="stylesheet" href="./font/qweather-icons.css">
+  <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+</head>
+<body>
 
-    <script>
-      function getWeather() {
-        fetch('http://localhost:8999/api/v1/weather/getweather')  // 发送 GET 请求
-          .then(response => response.json())  // 将响应转换为 JSON 格式
-          .then(data => {
-            // 在这里处理从服务器端获取到的数据
-            console.log(data);
-            console.log(data.air_quality_fxLink)
-            // // 在页面上显示数据
-            // document.getElementById('result').textContent = JSON.stringify(data, null, 4);
-            // 传递数据到下一个页面
-            sessionStorage.setItem('weatherData', JSON.stringify(data));
-            // 跳转到展示页面
-            window.location.href = 'weather.html';
-          })
-          .catch(error => {
-            // 在这里处理请求失败的情况
-            console.error(error);
-          });
+<!-- 主要内容模板 -->
+<!-- =================================================================================
+======================================================================================
+======================================================================================
+======================================================================================
+======================================================================================
+======================================================================================
+================================================================================== -->
+  <svg class="loading-icon" viewBox="0 0 100 100" id="loading">
+    <defs>
+      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" />
+        <stop offset="25%" />
+        <stop offset="50%" />
+        <stop offset="100%" />
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="40" />
+  </svg>
+
+  <div class="card" id="main">
+    <!-- 文字展示 -->
+    <div class="card-header">
+      <div class="flex-center _top">
+        <h2 text="{{city_name}}"></h2>
+        <i icon="{{iconDay}}"></i>
+        <h2><span text="{{tempMin}}"></span>℃ - <span text="{{tempMax}}"></span>℃</h2>
+      </div>
+      <div class="flex-center _bottom">
+        <p>湿度: <span text="{{humidity}}"></span></p>
+        <p>空气质量: <span text="{{air_quality.category}}"></span></p>
+        <p if="i==0">能见度: <span text="{{weather_now.vis}}"></span></p>
+        <p if="i==0">风向: <span text="{{weather_now.windDir}}"></span></p>
+        <p>日期: <span text="{{fxDate}}"></span></p>
+        <a href="{{air_quality_fxLink}}">空⽓质量的官⽅⻚⾯</a>
+        <p></p>
+        <a href="{{fxLink}}">天⽓预报的官⽅⻚⾯</a>
+      </div>
+    </div>
+    <!-- 图表 -->
+    <div class="card-echart">
+      <div class="card-echart-item">
+        <div class="qr-text">气温折线图: </div>
+        <div id="echart"></div>
+      </div>
+      <div class="card-echart-item">
+        <div class="qr-text">湿度折线图: </div>
+        <div id="echart2"></div>
+      </div>
+    </div>
+    <!-- 底部导航栏 -->
+    <div class="card-footer" id="card-footer"></div>
+  </div>
+
+  <script>
+    // 内存中保存加载dom
+    const loadingFragment = document.createDocumentFragment(); // svg动画
+    loadingFragment.appendChild(loading);
+
+    const mainFragment = document.createDocumentFragment(); // 内容
+    mainFragment.appendChild(main);
+  </script>
+
+<!-- 内容 -->
+<!-- =================================================================================
+======================================================================================
+======================================================================================
+======================================================================================
+======================================================================================
+======================================================================================
+================================================================================== -->
+
+  <div class="btns">
+    <button id="btn">天气查询</button>
+  </div>
+
+  <!-- 加载动画 -->
+  <div id="loadingBox"></div>
+
+  <!-- 卡槽内容 -->
+  <div id="container"></div>
+
+  <script>
+    (function() {
+      // svg加载动画
+      /*==================================================================================*/
+      function startLoading() { // 开启动画
+        loadingBox.appendChild(loadingFragment);
+        btn.classList.add("disabled");
+        btn.disabled = true;
+        typeof main !== 'undefined' && mainFragment.appendChild(main);
       }
-    </script>
-  </body>
+      function stopLoading() { // 关闭动画
+        btn.classList.remove("disabled");
+        btn.disabled = false;
+        typeof loading !== 'undefined' && loadingFragment.appendChild(loading);
+      }
+
+      // 模板编译
+      /*==================================================================================*/
+      function nodeTraverse($frag, data, pages, common_mes, page) { // node节点, 数据, 页数
+        Array.from($frag).forEach(node => {
+          if(node.nodeType === 1) { // 递归遍历
+            let prop;
+            prop = node.getAttribute('icon');
+            if(prop && node.nodeName === 'I') { // icon图标
+              node.className = `qi-${replaceText(prop, data)}`;
+              return;
+            }
+            prop = node.getAttribute('if');
+            if(prop && node.nodeName === 'P') { // i===0
+              if(page !== 0) {
+                node.className = 'none';
+                return;
+              }
+              node.className = '';
+            }
+            prop = node.getAttribute('text');
+            if(prop && node.nodeName === 'H2') { // 地点
+              node.innerText = replaceText(prop, common_mes);
+              return;
+            }
+            if(prop && node.nodeName === 'SPAN') { // 文本
+              node.innerText = replaceText(prop, data);
+              return;
+            }
+            prop = node.getAttribute('href');
+            if(prop && node.nodeName === 'A') { // a标签跳转
+              node.setAttribute('href', replaceText(prop, common_mes));
+              return;
+            }
+            prop = node.id;
+            if(prop === 'card-footer') { // 分页栏
+              if(!_active && !_cacheActive) return; // 如果只是按按钮则直接跳过渲染
+              node.innerHTML = '';
+              for(let i = 1; i <= pages; i++) {
+                const pageNode = document.createElement('span');
+                if(i === 1) pageNode.className = 'active';
+                pageNode.innerText = i;
+                node.appendChild(pageNode);
+              }
+              node.onclick = function(event) { // 添加点击事件
+                if (event.target.tagName === 'SPAN') {
+                  const activeSpan = container.querySelector('.active');
+                  if (activeSpan) {
+                    activeSpan.classList.remove('active');
+                  }
+                  event.target.classList.add('active');
+                  init(+event.target.innerText-1);
+                }
+              }
+              return;
+            }
+            nodeTraverse(node.childNodes, data, pages, common_mes, page);
+          }
+        })
+      }
+      function replaceText(template, data) {
+        return template.replace(/{{(.*?)}}/g, (match, key) => eval(`data.${key.trim()}`))
+      }
+
+      // 缓存设置
+      /*==================================================================================*/
+      const _YANDEXWEATHER = '_YandexWeather';
+      const _YandexOption = 'YandexOption';
+      const _YandexOption2 = 'YandexOption2';
+      const __Y__ = '__Y__'; // 分割符
+      const outDate = 24 * 60 * 60 * 1000; // 过期时间设置为一天
+      function hasCached() {
+        let data = localStorage.getItem(_YANDEXWEATHER);
+        if(!data) return false;
+        data = data.split(__Y__);
+        if(Date.now() - data[0] >= outDate) {
+          localStorage.removeItem(_YANDEXWEATHER);
+          localStorage.removeItem(_YandexOption);
+          return false;
+        }
+        return [
+                JSON.parse(data[1]), 
+                JSON.parse(localStorage.getItem(_YandexOption)), 
+                JSON.parse(localStorage.getItem(_YandexOption2))
+              ];
+      }
+      function setCached(data, option, option2) { // 设置缓存数据
+        localStorage.setItem(_YANDEXWEATHER, `${Date.now()}${__Y__}${JSON.stringify(data)}`);
+        localStorage.setItem(_YandexOption, JSON.stringify(option));
+        localStorage.setItem(_YandexOption2, JSON.stringify(option2));
+      }
+
+      // 卡片内容显示
+      /*==================================================================================*/
+      function showCard(data, option, option2, page, pages) { // 数据, 表格数据, 目前展示第几页, 页数
+        startLoading();
+        nodeTraverse(mainFragment.childNodes, data.daily[page], pages, {air_quality_fxLink: data.air_quality_fxLink,fxLink: data.fxLink, city_name: data.city_name}, page); // 模板编译
+        container.appendChild(mainFragment); // 添加入dom
+        if(!echart_1) {
+          echart_1 = echarts.init(echart);
+          echart_2 = echarts.init(echart2);
+        }
+        echart_1.setOption(option); // 表格初始化
+        echart_2.setOption(option2);
+        stopLoading();
+      }
+
+      // 数据请求
+      /*==================================================================================*/
+      async function getWeather() {
+        return fetch('http://localhost:8999/api/v1/weather/getweather')
+      }
+
+      // 初始化
+      /*==================================================================================*/
+      let _active = false; // 判断是不是请求数据还是按按钮
+      function init(page = 0) { // 从缓存获取初始化
+        const data = hasCached();
+        if(data) showCard(data[0], data[1], data[2], page, data[0].daily.length);
+      }
+
+      btn.onclick = async function() {
+        startLoading();
+        _active = true;
+        try {
+          let data = await getWeather();
+          data = await data.json();
+        } catch(e) { // 错误处理
+          stopLoading();
+          _active = false;
+          alert(e);
+          return;
+        }
+        let tempMins = [], tempMaxs = [], dates = [], humidities = [];
+        data.daily.forEach(d => {
+          tempMins.push(d.tempMin);
+          tempMaxs.push(d.tempMax);
+          dates.push(d.fxDate.slice(-5));
+          humidities.push(d.humidity);
+        })   
+        var option = {
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {},
+          xAxis: {
+            type: 'category',
+            data: dates
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [
+            {
+              name: '当日最高温度',
+              type: 'line',
+              data: tempMaxs,
+              markPoint: {
+                data: [
+                  { type: 'max', name: 'Max' },
+                  { type: 'min', name: 'Min' }
+                ]
+              },
+              markLine: {
+                data: [{ type: 'average', name: 'Avg' }]
+              }
+            },
+            {
+              name: '当日最低温度',
+              type: 'line',
+              data: tempMins,
+              markPoint: {
+                data: [
+                  { type: 'max', name: 'Max' },
+                  { type: 'min', name: 'Min' }
+                ]
+              },
+              markLine: {
+                data: [{ type: 'average', name: 'Avg' }]
+              }
+            }
+          ]
+        };
+        var option2 = {
+          tooltip: {
+            trigger: 'axis'
+          },
+          xAxis: {
+            type: 'category',
+            data: dates
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [
+            {
+              name: '湿度',
+              type: 'line',
+              data: humidities,
+              markPoint: {
+                data: [
+                  { type: 'max', name: 'Max' },
+                  { type: 'min', name: 'Min' }
+                ]
+              },
+              markLine: {
+                data: [{ type: 'average', name: 'Avg' }]
+              }
+            }
+          ]
+        };
+        setCached(data, option, option2); // 设置缓存
+        showCard(data, option, option2, 0, data.daily.length); // 卡片显示
+        stopLoading();
+        _active = false;
+      }
+
+      // 初始化开始
+      /*=================================================================================================*/
+      let echart_1, echart_2;
+      let _cacheActive = true;
+      init();
+      _cacheActive = false;
+    })()
+
+  </script>
+</body>
 </html>

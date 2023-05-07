@@ -1,0 +1,28 @@
+body {
+    background: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+.btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+#btn {
+  margin: 30px;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(33, 148, 241);
+  background-color: rgba(32, 149, 244);
+  color: white;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+#btn.disabled { /* 点击置灰 */
+  cursor: not-allowed;
+  background-color: #cfd0d3;
+  border-color: #c5c5c5;
+}
